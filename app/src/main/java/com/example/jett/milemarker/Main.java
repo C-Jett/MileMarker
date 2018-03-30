@@ -35,7 +35,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
+//////
 public class Main extends AppCompatActivity implements OnMapReadyCallback, android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback {
 
     private FusedLocationProviderClient locationServices;
