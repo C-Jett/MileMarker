@@ -2,6 +2,7 @@ package com.example.jett.milemarker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.StrictMode;
@@ -29,6 +30,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,6 +41,8 @@ import java.util.TimerTask;
 
 
 public class Main extends AppCompatActivity implements OnMapReadyCallback, android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private SharedPreferences preferences;
 
     private FusedLocationProviderClient locationServices;
     private GoogleMap gMap;
@@ -51,7 +58,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        preferences = getPreferences(MODE_PRIVATE);
         snapToRoads = new snapToRoads(this.getString(R.string.google_maps_key));
 
         locationServices = LocationServices.getFusedLocationProviderClient(this);
@@ -100,18 +107,32 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
     void timerControl(Boolean isTimerOn){
 
         if (isTimerOn){
+            getDeviceLocation(true, "Start");
             trackingTimer = new Timer();
             TimerTask task = new TimerTask() {
                 @Override
                 public void run() {
-                    getDeviceLocation(true, "Location");
+                    getDeviceLocation(false, "");
                 }
             };
             trackingTimer.scheduleAtFixedRate(task, 0, 20000);
         }
         else {
+            getDeviceLocation(true, "Finish");
             trackingTimer.cancel();
             snapToRoads.execute();
+            try{
+                SharedPreferences.Editor editor = preferences.edit();
+                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+                ObjectOutputStream output = new ObjectOutputStream(byteArray);
+                output.writeObject(snapToRoads.locations);
+                output.close();
+                editor.putString("Trip", byteArray.toString());
+            }
+            catch (IOException e){
+                e.printStackTrace();
+                return;
+            }
         }
     }
 
@@ -165,9 +186,4 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
             }
         });
     }
-
-//    void drawMapLines(PolylineOptions polyline) {
-//
-//        gMap.addPolyline(polyline);
-//    }
 }
