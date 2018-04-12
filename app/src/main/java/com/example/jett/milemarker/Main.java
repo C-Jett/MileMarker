@@ -31,8 +31,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -119,19 +122,37 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         }
         else {
             getDeviceLocation(true, "Finish");
+            trackMe.setEnabled(false);
             trackingTimer.cancel();
             snapToRoads.execute();
-            try{
-                SharedPreferences.Editor editor = preferences.edit();
-                ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-                ObjectOutputStream output = new ObjectOutputStream(byteArray);
-                output.writeObject(snapToRoads.locations);
-                output.close();
-                editor.putString("Trip", byteArray.toString());
+
+            File directory = getFilesDir();
+            File historyFile = new File(directory, "history");
+
+            try {
+                if (historyFile.exists()) {
+                    ArrayList<ArrayList<LongLatSerial>> history = null;
+                    FileInputStream input = new FileInputStream(historyFile);
+                    ObjectInputStream objIn = new ObjectInputStream(input);
+                    Object historyObject = objIn.readObject();
+                    objIn.close();
+                    if (historyObject instanceof ArrayList) {
+                        history = (ArrayList<ArrayList<LongLatSerial>>) historyObject;
+                    } else {
+                        Log.d("INSTANCEUPDATE", "Object for history list is incorrect");
+                        return;
+                    }
+                    if (history != null) {
+                        history.add(snapToRoads.getSerialArrayList());
+                        FileOutputStream fileOut = new FileOutputStream(historyFile);
+                        ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
+                        objOut.writeObject(history);
+                        objOut.close();
+                    }
+                }
             }
-            catch (IOException e){
+            catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-                return;
             }
         }
     }

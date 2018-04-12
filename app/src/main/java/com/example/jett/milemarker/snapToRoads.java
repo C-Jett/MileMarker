@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -72,4 +73,25 @@ public class snapToRoads extends AsyncTask<Void, Void, Void> {
         super.onPostExecute(aVoid);
         map.addPolyline(polyline);
     }
+
+    ArrayList<LongLatSerial> getSerialArrayList() {
+        ArrayList<LongLatSerial> returning = new ArrayList<>();
+        for (Location i : locations) {
+            if (i != null) {
+                returning.add(new LongLatSerial(i));
+            }
+        }
+        return returning;
+    }
+}
+
+class LongLatSerial implements Serializable {
+    Double longitude;
+    Double latitude;
+
+    LongLatSerial (Location input) {
+        longitude = input.getLongitude();
+        latitude = input.getLatitude();
+    }
+
 }
