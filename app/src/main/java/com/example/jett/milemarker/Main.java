@@ -108,7 +108,6 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
     }
 
     void timerControl(Boolean isTimerOn){
-
         if (isTimerOn){
             getDeviceLocation(true, "Start");
             trackingTimer = new Timer();
