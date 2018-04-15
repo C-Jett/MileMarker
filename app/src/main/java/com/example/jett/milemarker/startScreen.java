@@ -2,15 +2,22 @@ package com.example.jett.milemarker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextClock;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,9 +25,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class startScreen extends AppCompatActivity {
+
+    TextClock clock;
 
     ArrayList<ArrayList<LongLatSerial>> history = new ArrayList<>();
 
@@ -32,6 +43,8 @@ public class startScreen extends AppCompatActivity {
         updateHistoryList();
 
         Button startButton = findViewById(R.id.startNewButton);
+        clock = findViewById(R.id.clockView);
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
             @Override
@@ -50,6 +63,14 @@ public class startScreen extends AppCompatActivity {
     //Takes intent and the second variable is the destination.
     public void sendMessage(View view) {
         Intent intent = new Intent(this, Main.class);
+        startActivity(intent);
+    }
+
+    public void sendTrip(View view, Integer intOfHistory) {
+        Intent intent = new Intent(this, trip_info.class);
+        if (intOfHistory != null && history.size() > intOfHistory && intOfHistory >=0){
+            intent.putExtra("historyIndex",intOfHistory);
+        }
         startActivity(intent);
     }
 
@@ -86,5 +107,12 @@ public class startScreen extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toShow);
         ListView historyView = findViewById(R.id.historyList);
         historyView.setAdapter(adapter);
+
+        historyView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                sendTrip(view, position);
+            }
+        });
     }
 }

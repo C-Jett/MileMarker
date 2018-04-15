@@ -18,8 +18,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        //First activity
-        <activity android:name=".splashScreen"
+
+        <activity
+            android:name=".splashScreen"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,9 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        //secondary activities
         <activity android:name=".Main" />
-        <activity android:name=".startScreen"></activity>
+        <activity android:name=".startScreen" />
+        <activity android:name=".trip_info"></activity>
     </application>
 
 </manifest>

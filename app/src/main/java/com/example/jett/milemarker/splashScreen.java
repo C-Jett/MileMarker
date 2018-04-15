@@ -23,10 +23,9 @@ public class splashScreen extends AppCompatActivity {
             @Override
             public void run() {
                 startActivity(new Intent(getApplicationContext(), startScreen.class));
+                finish();
             }
         }, 2000);
-
-
     }
 
     public void bounce(View view){

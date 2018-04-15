@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
@@ -46,7 +47,7 @@ import java.util.TimerTask;
 public class Main extends AppCompatActivity implements OnMapReadyCallback, android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback {
 
     private SharedPreferences preferences;
-
+    private Integer historyIndexToPull;
     private FusedLocationProviderClient locationServices;
     private GoogleMap gMap;
     private snapToRoads snapToRoads;
@@ -73,10 +74,9 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
             @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
-                if (!getPermissionsGranted(new String[]{Manifest.permission.ACCESS_FINE_LOCATION})){
+                if (!getPermissionsGranted(new String[]{Manifest.permission.ACCESS_FINE_LOCATION})) {
                     askPermission();
-                }
-                else {
+                } else {
                     gMap.setMyLocationEnabled(true);
                     getDeviceLocation(false, "");
                 }
@@ -91,15 +91,13 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                 if (!trackingOn) {
                     if (!getPermissionsGranted(new String[]{Manifest.permission.ACCESS_FINE_LOCATION})) {
                         askPermission();
-                    }
-                    else {
+                    } else {
                         trackingOn = true;
                         gMap.setMyLocationEnabled(true);
                         trackMe.setText("Turn off tracking");
                         timerControl(true);
                     }
-                }
-                else {
+                } else {
                     trackMe.setText("Track Me");
                     timerControl(false);
                 }
@@ -107,8 +105,8 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         });
     }
 
-    void timerControl(Boolean isTimerOn){
-        if (isTimerOn){
+    void timerControl(Boolean isTimerOn) {
+        if (isTimerOn) {
             getDeviceLocation(true, "Start");
             trackingTimer = new Timer();
             TimerTask task = new TimerTask() {
@@ -118,8 +116,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                 }
             };
             trackingTimer.scheduleAtFixedRate(task, 0, 20000);
-        }
-        else {
+        } else {
             getDeviceLocation(true, "Finish");
             trackMe.setEnabled(false);
             trackingTimer.cancel();
@@ -135,6 +132,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                     ObjectInputStream objIn = new ObjectInputStream(input);
                     Object historyObject = objIn.readObject();
                     objIn.close();
+                    getDeviceLocation(true, "Finish");
                     if (historyObject instanceof ArrayList) {
                         history = (ArrayList<ArrayList<LongLatSerial>>) historyObject;
                     } else {
@@ -149,8 +147,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                         objOut.close();
                     }
                 }
-            }
-            catch (IOException | ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -167,21 +164,20 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (getPermissionsGranted(permissions)) {
             Toast.makeText(this, "Permissions Granted", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             Toast.makeText(this, "Permissions Denied", Toast.LENGTH_SHORT).show();
         }
     }
 
-    void askPermission(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+    void askPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1039);
         }
     }
 
-    boolean getPermissionsGranted(String[] permissions){
-        for (String permission: permissions){
-            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED){
+    boolean getPermissionsGranted(String[] permissions) {
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }
@@ -189,16 +185,15 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
     }
 
     @SuppressLint("MissingPermission")
-    void getDeviceLocation(final Boolean addPin, final String pinTitle){
+    void getDeviceLocation(final Boolean addPin, final String pinTitle) {
         locationServices.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
             @Override
             public void onComplete(@NonNull Task<Location> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Location result = task.getResult();
-
                     snapToRoads.locations.add(result);
                     gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(result.getLatitude(), result.getLongitude()), 15));
-                    if (addPin){
+                    if (addPin) {
                         gMap.addMarker(new MarkerOptions().position(new LatLng(result.getLatitude(), result.getLongitude()))
                                 .title(pinTitle));
                     }
@@ -206,4 +201,5 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
             }
         });
     }
+
 }
