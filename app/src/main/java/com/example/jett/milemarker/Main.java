@@ -132,7 +132,6 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                     ObjectInputStream objIn = new ObjectInputStream(input);
                     Object historyObject = objIn.readObject();
                     objIn.close();
-                    getDeviceLocation(true, "Finish");
                     if (historyObject instanceof ArrayList) {
                         history = (ArrayList<ArrayList<LongLatSerial>>) historyObject;
                     } else {

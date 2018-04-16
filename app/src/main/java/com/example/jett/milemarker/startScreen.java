@@ -41,9 +41,16 @@ public class startScreen extends AppCompatActivity {
         setContentView(R.layout.activity_start_screen);
 
         updateHistoryList();
-
+        Button settingsButton = findViewById(R.id.settingsButton);
         Button startButton = findViewById(R.id.startNewButton);
         clock = findViewById(R.id.clockView);
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendSettings(v);
+            }
+        });
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("MissingPermission")
@@ -63,6 +70,11 @@ public class startScreen extends AppCompatActivity {
     //Takes intent and the second variable is the destination.
     public void sendMessage(View view) {
         Intent intent = new Intent(this, Main.class);
+        startActivity(intent);
+    }
+
+    public void sendSettings(View view) {
+        Intent intent = new Intent(this, settings.class);
         startActivity(intent);
     }
 

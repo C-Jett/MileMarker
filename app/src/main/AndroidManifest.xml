@@ -30,7 +30,8 @@
         </activity>
         <activity android:name=".Main" />
         <activity android:name=".startScreen" />
-        <activity android:name=".trip_info"></activity>
+        <activity android:name=".trip_info" />
+        <activity android:name=".settings"></activity>
     </application>
 
 </manifest>
