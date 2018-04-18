@@ -34,6 +34,9 @@ public class settings extends AppCompatActivity {
                 if(isChecked){
 
                 }
+                else{
+
+                }
             }
         });
 

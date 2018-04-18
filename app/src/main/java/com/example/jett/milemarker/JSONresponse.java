@@ -24,3 +24,29 @@ public class JSONresponse {
         }
     }
 }
+
+class DistanceResponse{
+    List<String> destination_addresses;
+    List<String> origin_addresses;
+    List<row> rows;
+    String status;
+
+    class row {
+        List<element> elements;
+    }
+
+    class element {
+        distance distance;
+        duration duration;
+    }
+
+    class distance {
+        String text;
+        Integer value;
+    }
+
+    class duration {
+        String text;
+        Integer value;
+    }
+}
