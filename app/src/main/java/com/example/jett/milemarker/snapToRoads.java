@@ -18,6 +18,9 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * Interprets the address for interpolating the roads when taking trips from Google.
+ */
 public class snapToRoads extends AsyncTask<Void, Void, Void> {
     static final String baseURL = "https://roads.googleapis.com/v1/snapToRoads?path=";
     private String key = "";
@@ -53,8 +56,13 @@ public class snapToRoads extends AsyncTask<Void, Void, Void> {
             Log.d("snapToRoads","No URL to follow.");
         }
         return coordinates;
-    }
+    } //Coordinates are returned here as points to snap to the road.
 
+    /**
+     * Makes the snap to roads work in the background and adds polylines as it does so.
+     * @param voids
+     * @return null
+     */
     @Override
     protected Void doInBackground(Void... voids) {
         ArrayList<JSONresponse.snappedPoints> snappedLocations = getSnapPoints();
@@ -68,6 +76,11 @@ public class snapToRoads extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
+    /**
+     * Displays the polylines created in the do in background.
+     * Makes sure longitudes and latitudes are correctly placed inside arraylist.
+     * @param aVoid
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);

@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
         android:layout_marginEnd="32dp"
-        android:text="Find Me"
         android:background="#FFFFFF"
+        android:text="Find Me"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -35,12 +35,59 @@
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="32dp"
-        android:text="Track Me"
         android:background="#FFFFFF"
+        android:text="Track Me"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/findButton"
-        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/findButton"
         app:layout_constraintVertical_bias="0.0" />
+
+    <View
+        android:id="@+id/viewFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#424242"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        style="@android:style/Widget.ImageButton"
+        android:layout_width="254dp"
+        android:layout_height="260dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
+        android:background="@android:color/transparent"
+        android:backgroundTint="@android:color/transparent"
+        android:tint="@android:color/transparent"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/viewFragment"
+        app:layout_constraintStart_toStartOf="@+id/viewFragment"
+        app:layout_constraintTop_toTopOf="@+id/doNotText"
+        app:srcCompat="@mipmap/stop_sign" />
+
+    <TextView
+        android:id="@+id/doNotText"
+        android:layout_width="307dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="56dp"
+        android:fontFamily="monospace"
+        android:text="Don't Text and Drive!"
+        android:textAppearance="@style/TextAppearance.CastIntroOverlay.Button"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/viewFragment" />
 </android.support.constraint.ConstraintLayout>

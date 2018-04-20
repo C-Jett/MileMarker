@@ -70,6 +70,12 @@ public class trip_info extends AppCompatActivity implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Important for loading the old polyline using the file from that trip.
+     * Opens the input stream of serialized data and pulls the index of that trip.
+     * Uses the key needed and updates the information on the gMap while drawing the
+     * polyline back.
+     */
     void loadPolyLineFromHistory() {
         if (gMap != null) {
             File directory = getFilesDir();
@@ -86,6 +92,7 @@ public class trip_info extends AppCompatActivity implements OnMapReadyCallback {
                         history = (ArrayList<ArrayList<LongLatSerial>>) historyObject;
                         ArrayList<LongLatSerial> historyToPull = history.get(historyIndexToPull);
 
+                        //Call to the distanceCalculator for actually updating view information.
                         distanceCalculator distanceCalculator = new distanceCalculator(historyToPull, this.getString(R.string.google_maps_key),distance,startPoint,endPoint);
                         distanceCalculator.execute();
 
@@ -100,15 +107,17 @@ public class trip_info extends AppCompatActivity implements OnMapReadyCallback {
                         gMap.addMarker(new MarkerOptions().position(new LatLng(lineToDraw.getPoints().get(lineToDraw.getPoints().size() - 1).latitude, lineToDraw.getPoints().get(lineToDraw.getPoints().size() - 1).longitude)).title("Finish"));
                     } else {
                         Log.d("INSTANCEUPDATE", "Object for history list is incorrect");
-                        return;
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-        }
+        } //Start and final points are placed and gMap view is filled up.
     }
 
+    /**
+     * Deletes the specific trip that you are on instead of all trips.
+     */
     void deleteSelectedTrip() {
         ArrayList<ArrayList<LongLatSerial>> historyArray;
         historyArray = getHistoryArray();
@@ -117,7 +126,7 @@ public class trip_info extends AppCompatActivity implements OnMapReadyCallback {
             historyToFile(historyArray);
         }
         else {
-            Log.d("IT WAS NULL", "NULLLLLLLLLLLLLLLLLLLLLLLLLL");
+            Log.d("null", "No trip in this view.");
         }
     }
 
@@ -143,6 +152,11 @@ public class trip_info extends AppCompatActivity implements OnMapReadyCallback {
         return null;
     }
 
+    /**
+     * Puts the longitudes and latitudes in a file so that it can be saved
+     * even after deleting the app.
+     * @param historyToFile
+     */
     void historyToFile(ArrayList<ArrayList<LongLatSerial>> historyToFile){
        try {
            File directory = getFilesDir();

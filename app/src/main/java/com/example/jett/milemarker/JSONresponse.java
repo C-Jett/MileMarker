@@ -2,6 +2,10 @@ package com.example.jett.milemarker;
 
 import java.util.List;
 
+/**
+ * List for snapped coordinates along the road.
+ * Saves longitude and latitude data as string for GSON.
+ */
 public class JSONresponse {
     List<snappedPoints> snappedPoints;
     class snappedPoints {
@@ -25,6 +29,10 @@ public class JSONresponse {
     }
 }
 
+/**
+ * Similar to above. Used by Google to determine correct name and distances
+ * that has been travelled on the polyline.
+ */
 class DistanceResponse{
     List<String> destination_addresses;
     List<String> origin_addresses;

@@ -28,6 +28,10 @@ public class splashScreen extends AppCompatActivity {
         }, 2000);
     }
 
+    /**
+     * Provides animation for the bounce.
+     * @param view
+     */
     public void bounce(View view){
         ImageView image = (ImageView)findViewById(R.id.imageView);
         Animation animation1 =
@@ -35,6 +39,10 @@ public class splashScreen extends AppCompatActivity {
         image.startAnimation(animation1);
     }
 
+    /**
+     * Provides animation for the drop.
+     * @param view
+     */
     public void drop(View view){
         ImageView image = (ImageView)findViewById(R.id.imageView);
         Animation animation1 =

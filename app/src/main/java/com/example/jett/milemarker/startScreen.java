@@ -61,6 +61,7 @@ public class startScreen extends AppCompatActivity {
         });
     }
 
+    //Makes sure the list is updated upon returning to the view.
     @Override
     protected void onResume() {
         super.onResume();
@@ -78,6 +79,12 @@ public class startScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * intOfHistory is used to bring the data that is saved with the gMap according to the
+     * trip number in start_screen.
+     * @param view
+     * @param intOfHistory - int of trip number
+     */
     public void sendTrip(View view, Integer intOfHistory) {
         Intent intent = new Intent(this, trip_info.class);
         if (intOfHistory != null && history.size() > intOfHistory && intOfHistory >=0){
@@ -86,6 +93,11 @@ public class startScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Copied code from other locations in app.
+     * Opens the serialized stream to take in data then updates the history list for showing
+     * previous trips.
+     */
     public void updateHistoryList() {
         ArrayList<String> toShow = new ArrayList<>();
         File directory = getFilesDir();
@@ -114,7 +126,8 @@ public class startScreen extends AppCompatActivity {
 
         for (int i = 0; i < history.size(); i++) {
             toShow.add("Trip " + (i + 1));
-        }
+        } //Trip is added to the start_screen view and data is saved within it.
+
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, toShow);
         ListView historyView = findViewById(R.id.historyList);

@@ -16,6 +16,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+/**
+ * Asynchronous calculation of distance using our LongLatSerial array.
+ */
 public class distanceCalculator extends AsyncTask<Void, Void, Void> {
     private String key = "";
     private TextView toUpdateDistance;
@@ -32,6 +35,10 @@ public class distanceCalculator extends AsyncTask<Void, Void, Void> {
         this.toUpdateFinish = toUpdateFinish;
     }
 
+    /**
+     * Places information within the key needed for Google to return the locations.
+     * @return (String) returningURL
+     */
     private String distanceURL(){
         final String baseURL = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=";
         String returningURL = baseURL;
@@ -49,6 +56,12 @@ public class distanceCalculator extends AsyncTask<Void, Void, Void> {
         returningURL += "&key=" + key;
         return returningURL;
     }
+
+    /**
+     * Performs tasks in the background and then closes the stream from serialized data.
+     * @param voids
+     * @return null
+     */
     @Override
     protected Void doInBackground(Void... voids) {
         String stringURL = distanceURL();
@@ -65,6 +78,11 @@ public class distanceCalculator extends AsyncTask<Void, Void, Void> {
         return null;
     }
 
+    /**
+     * Upon completing the backgroudn tasks this will set the text on other views.
+     * Definitely better ways to do this but could not get <WeakReference> to work.
+     * @param aVoid
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
@@ -79,7 +97,7 @@ public class distanceCalculator extends AsyncTask<Void, Void, Void> {
             String[] stringArray = current.distance.text.split(" ");
             try {
                 double value = Double.parseDouble(stringArray[0]);
-                total += value;
+                total = value;
             } catch (NullPointerException | NumberFormatException e) {
                 e.printStackTrace();
             }

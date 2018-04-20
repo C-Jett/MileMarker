@@ -31,7 +31,7 @@
         <activity android:name=".Main" />
         <activity android:name=".startScreen" />
         <activity android:name=".trip_info" />
-        <activity android:name=".settings"></activity>
+        <activity android:name=".settings" />
     </application>
 
 </manifest>

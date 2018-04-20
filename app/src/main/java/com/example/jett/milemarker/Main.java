@@ -2,10 +2,12 @@ package com.example.jett.milemarker;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.media.Image;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -15,6 +17,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,7 +47,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-
+/**
+* Class: Main
+* Description: Main view that displays gMap on screen with two track buttons. This is the main trip
+*              view and also has a stop screen to keep you from watching your phone while driving.
+ **/
 public class Main extends AppCompatActivity implements OnMapReadyCallback, android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback {
 
     private SharedPreferences preferences;
@@ -52,6 +60,9 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
     private GoogleMap gMap;
     private snapToRoads snapToRoads;
 
+    private TextView doNotText;
+    private View viewFragment;
+    private ImageButton ImageButton;
     private Button findMe;
     private Button trackMe;
 
@@ -65,9 +76,14 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         preferences = getPreferences(MODE_PRIVATE);
         snapToRoads = new snapToRoads(this.getString(R.string.google_maps_key));
 
+        //Accesses our keys and other important information for connecting with the info client.
         locationServices = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mappie = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mappie);
         mappie.getMapAsync(this);
+
+        ImageButton = findViewById(R.id.imageButton);
+        viewFragment = findViewById(R.id.viewFragment);
+        doNotText = findViewById(R.id.doNotText);
 
         findMe = (Button) this.findViewById(R.id.findButton);
         findMe.setOnClickListener(new View.OnClickListener() {
@@ -94,17 +110,37 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                     } else {
                         trackingOn = true;
                         gMap.setMyLocationEnabled(true);
-                        trackMe.setText("Turn off tracking");
+                        viewFragment.setVisibility(View.VISIBLE);
+                        ImageButton.setVisibility(View.VISIBLE);
+                        findMe.setVisibility(View.INVISIBLE);
+                        trackMe.setVisibility(View.INVISIBLE);
+                        doNotText.setVisibility(View.VISIBLE);
                         timerControl(true);
                     }
-                } else {
-                    trackMe.setText("Track Me");
-                    timerControl(false);
                 }
+            }
+        });
+
+        ImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFragment.setVisibility(View.INVISIBLE);
+                ImageButton.setVisibility(View.INVISIBLE);
+                findMe.setVisibility(View.VISIBLE);
+                trackMe.setVisibility(View.VISIBLE);
+                doNotText.setVisibility(View.INVISIBLE);
+                trackMe.setText("Track Me");
+                timerControl(false);
+                Intent intent = new Intent(getApplicationContext(), startScreen.class);
+                startActivity(intent);
             }
         });
     }
 
+    /**
+     * Controls the time in which locations are discovered.
+     * Default 4 seconds (listed in milliseconds)
+     **/
     void timerControl(Boolean isTimerOn) {
         if (isTimerOn) {
             getDeviceLocation(true, "Start");
@@ -115,7 +151,7 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                     getDeviceLocation(false, "");
                 }
             };
-            trackingTimer.scheduleAtFixedRate(task, 0, 20000);
+            trackingTimer.scheduleAtFixedRate(task, 0, 4000);
         } else {
             getDeviceLocation(true, "Finish");
             trackMe.setEnabled(false);
@@ -148,9 +184,10 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
                 }
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-            }
-        }
+            } //Long and lats are now written to file and the stream from serialization is finished.
+        } //Map is saved with starting and ending locations.
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -158,6 +195,12 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         snapToRoads.map = gMap;
     }
 
+    /**
+     * For granting location permissions.
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -183,6 +226,11 @@ public class Main extends AppCompatActivity implements OnMapReadyCallback, andro
         return true;
     }
 
+    /**
+     * Gets device locations at the start and allows the camera to center over the gMap view.
+     * @param addPin - whether or not to add pin
+     * @param pinTitle - Name of the pin being placed
+     */
     @SuppressLint("MissingPermission")
     void getDeviceLocation(final Boolean addPin, final String pinTitle) {
         locationServices.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
